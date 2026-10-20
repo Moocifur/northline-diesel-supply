@@ -1,0 +1,20 @@
+# Netlify settings for the admin panel. In Netlify, set "Base directory" to `admin`.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Forward API calls through the admin's own domain, so the login cookie is first-party and works
+# in browsers that block third-party cookies (Safari, Chrome in some modes).
+# Replace YOUR-API with the name of your Render service.
+[[redirects]]
+  from = "/api/*"
+  to = "https://YOUR-API.onrender.com/:splat"
+  status = 200
+  force = true
+
+# Single-page app: every other path serves index.html so React Router can handle it.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

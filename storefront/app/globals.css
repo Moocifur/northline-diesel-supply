@@ -1,0 +1,6 @@
+/* storefront/app/globals.css */
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}

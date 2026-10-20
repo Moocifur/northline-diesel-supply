@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Part {
+  id String @id @default(cuid())
+  partNumber String @unique
+  description String
+  brand String
+  category String
+  productGroup String?
+  upc String?
+  weight Float?
+  height Float?
+  width Float?
+  depth Float?
+  cubage Float?
+  oeManufacturer String?
+  countryOfOrig String?
+  tariffNo String?
+  scheduleBCode String?
+  price Decimal?
+  coreCharge Decimal?
+  quantityOnHand Int @default(0)
+  images String[]
+  active Boolean @default(true)
+  lastSyncedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orderItems OrderItem[]
+}
+
+enum WholesaleStatus {
+    NONE
+    PENDING
+    APPROVED
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  password String
+  name String
+  company String?
+  wholesaleStatus WholesaleStatus @default(NONE)
+  wholesaleDiscountPercent Int @default(0)
+  isAdmin Boolean @default(false)
+  isOwner Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders Order[]
+}
+
+enum OrderStatus {
+    PENDING_PAYMENT
+    PAID
+    FULFILLED
+    CANCELLED
+}
+
+enum CoreStatus {
+    NONE
+    PENDING
+    RETURNED
+    INSPECTED
+    REFUNDED
+    REJECTED
+}
+
+model Order {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  status OrderStatus @default(PENDING_PAYMENT)
+  subtotal Decimal
+  coreChargeTotal Decimal @default(0)
+  total Decimal
+  items OrderItem[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id String @id @default(cuid())
+  orderId String
+  order Order @relation(fields: [orderId], references: [id])
+  partId String
+  part Part @relation(fields: [partId], references: [id])
+  partNumber String
+  description String
+  unitPrice Decimal
+  coreCharge Decimal?
+  quantity Int
+  coreStatus CoreStatus @default(NONE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

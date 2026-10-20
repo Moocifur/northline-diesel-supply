@@ -1,0 +1,18 @@
+{
+  "name": "dis-shop",
+  "private": true,
+  "workspaces": [
+    "api",
+    "storefront",
+    "admin"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=api",
+    "dev:storefront": "npm run dev --workspace=storefront",
+    "dev:admin": "npm run dev --workspace=admin",
+    "test": "npm test --workspace=api",
+    "build:admin": "npm run build --workspace=admin",
+    "build:storefront": "npm run build --workspace=storefront",
+    "db:seed": "npm run db:seed --workspace=api"
+  }
+}
